@@ -61,7 +61,14 @@ module "eks" {
   # Tell EKS to use the network we just made
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
+# --- FIX STARTS HERE ---
+  # This allows kubectl to connect over the internet
+  cluster_endpoint_public_access = true 
   
+  # This ensures the API server is reachable from any IP (required for GitHub runners)
+  cluster_endpoint_public_access_cidrs = ["0.0.0.0/0"]
+  # --- FIX ENDS HERE ---
+
   # Allow the cluster to be managed by the IAM Role we created for GitHub
   enable_cluster_creator_admin_permissions = true
 
