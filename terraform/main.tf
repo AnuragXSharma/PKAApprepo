@@ -21,7 +21,19 @@ terraform {
 provider "aws" {
   region = "us-east-1"
 }
+#feat(infra) : add ecr repository for app images
+resource "aws_ecr_repository" "app_repo" {
+  name                 = "pkacicd-app"
+  image_tag_mutability = "MUTABLE"
 
+  image_scanning_configuration {
+    scan_on_push = true # Automatically checks your code for vulnerabilities
+  }
+}
+
+output "ecr_repository_url" {
+  value = aws_ecr_repository.app_repo.repository_url
+}
 # --- VPC (Network) ---
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
